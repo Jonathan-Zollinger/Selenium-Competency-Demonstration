@@ -1,4 +1,5 @@
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap
+import org.openqa.selenium.WebDriver;
 
 class Webstaurant_Search {
     Map<String, String> selectors;
@@ -11,9 +12,10 @@ class Webstaurant_Search {
         this.selectors = ImmutableMap.of(
         //  ------ "my-selector-name", "xpath" ------
                 "search-bar-input", "input[id='searchval']",
-                "search-bar-submit-button", "button[value='Search']"
         )
     }
+
+    public searchForString(WebDriver driver)
 
 
 
