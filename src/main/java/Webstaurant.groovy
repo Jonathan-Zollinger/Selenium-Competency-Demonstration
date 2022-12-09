@@ -1,62 +1,50 @@
-import com.google.common.collect.ImmutableMap
-import io.github.bonigarcia.wdm.WebDriverManager
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.chrome.ChromeDriver
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.WebDriverWait
+
+import java.util.logging.Logger
 
 class Webstaurant {
-    WebDriver driver
+    WebDriver driver;
+    WebDriverWait wait;
+    Logger log = Logger.getLogger(this.class.getName())
+    final By SEARCH_BAR_INPUT = By.xpath("//input[@id='searchval']")
+    final By EXECUTE_SEARCH_BUTTON = By.xpath("//button[@value='Search']")
 
-    enum SelectorEnum {
-        SEARCH_BAR_TEXT_INPUT("search-bar-input", "input[id='searchval']")
-
-        final String name
-        final String xpath
-        static final Map map
-
-        static {
-            map = new HashMap<String,String>()
-            values().each{ Selector ->
-                printf("Name: %s, xpath: %s", Selector.name, Selector.xpath)
-                map.put(Selector.name, Selector.xpath)
-            }
-        }
-
-        private SelectorEnum(String name, String xpath) {
-            this.name   = name
-            this.xpath  = xpath
-        }
-
-        static getSelector( String name ) {
-            return map[name]
-        }
-
+    Webstaurant(WebDriver driver){
+        assert null != driver
+        this.driver = driver
+        wait = MyUtils.getWebDriverWait(driver)
+        driver.get("https://webstaurantstore.com")
     }
 
-    Webstaurant(){
-       getChromeDriver()
+    protected searchForString(String findMe){
+        log.info(String.format("Beginning attempt to search for `%s`.", findMe))
+        sendKeys(SEARCH_BAR_INPUT, findMe)
+        click (EXECUTE_SEARCH_BUTTON)
+        log.info(String.format("Finished attempt to search for `%s`.", findMe))
+        return this
     }
 
-    WebDriver getChromeDriver(){
-        // check latest version available here: https://chromedriver.storage.googleapis.com/index.html
-        WebDriverManager.chromedriver().browserVersion("99.0.4844.51").setup();
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("start-maximized");
-        options.addArguments("enable-automation");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-infobars");
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--disable-browser-side-navigation");
-        options.addArguments("--disable-gpu");
-        driver = new ChromeDriver(options);
-        driver.get("https://www.webstaurantstore.com/")
+    protected void sendKeys(By selector, String text) {
+        log.info(String.format("Beginning attempt to send keys `%s` to the `%s` element", text, selector))
+        waitForElement (selector)
+        driver.findElement (selector).sendKeys(text)
+        log.info(String.format("Finished attempt to send keys `%s` to the `%s` element", text, selector))
     }
 
+    protected void click(By selector) {
+        log.info(String.format("Beginning attempt to click the `%s` element", selector))
+        waitForElement (selector)
+        driver.findElement (selector).click()
+        log.info(String.format("Finished attempt to click the `%s` element", selector))
+    }
 
-    WebstaurantSearchResults searchForString(WebDriver driver, String findMe){
-        return driver.findElement(By.xpath(SelectorEnum.getSelector("search-bar-input") as String))
-                .sendKeys(findMe)
+    protected void waitForElement(By selector){
+        assert null != wait
+        log.info(String.format("Beginning attempt to wait for the element `%s` to be clickable", selector))
+        wait.until (webDriver -> driver.findElement (selector))
+        log.info(String.format("Finish attempt to wait for the element `%s` to be clickable", selector))
     }
 
 

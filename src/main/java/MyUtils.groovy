@@ -19,14 +19,9 @@ final class MyUtils {
         options.addArguments("--disable-dev-shm-usage")
         options.addArguments("--disable-browser-side-navigation")
         options.addArguments("--disable-gpu")
-        return new ChromeDriver(options).get("https://www.webstaurantstore.com/")
+        return new ChromeDriver(options)
     }
-
-    static WebDriverWait getWebdriverWait(WebDriver driver){
-        new WebDriverWait(driver, Duration.ofSeconds(2));
-    }
-
-    static WebDriverWait getWebdriverWait(WebDriver driver, int seconds){
-        new WebDriverWait(driver, Duration.ofSeconds(seconds));
+    static WebDriverWait getWebDriverWait(WebDriver driver) {
+        return new WebDriverWait(driver, Duration.ofSeconds(2));
     }
 }
