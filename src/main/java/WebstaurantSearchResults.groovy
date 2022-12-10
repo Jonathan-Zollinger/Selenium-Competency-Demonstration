@@ -4,8 +4,8 @@ import org.openqa.selenium.WebElement
 
 class WebstaurantSearchResults extends Webstaurant{
 
-    final By ALL_RESULTS         = By.xpath("//div[@id='main']")
-    final By RESULTS_DESCRIPTION = By.xpath("//div[@id='main']//a[@data-testid='itemDescription']")
+    final private By ALL_RESULTS         = By.xpath("//div[@id='main']")
+    final private By RESULTS_DESCRIPTION = By.xpath("//div[@id='main']//a[@data-testid='itemDescription']")
 
     WebstaurantSearchResults(WebDriver driver){
         super(driver)
