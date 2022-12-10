@@ -8,8 +8,11 @@ class Webstaurant {
     WebDriver driver;
     WebDriverWait wait;
     Logger log = Logger.getLogger(this.class.getName())
-    final By SEARCH_BAR_INPUT = By.xpath("//input[@id='searchval']")
-    final By EXECUTE_SEARCH_BUTTON = By.xpath("//button[@value='Search']")
+    final protected By SEARCH_BAR_INPUT = By.xpath("//input[@id='searchval']")
+    final protected By EXECUTE_SEARCH_BUTTON = By.xpath("//button[@value='Search']")
+    final protected By PAGINATION_NUMBER_BUTTONS = By.xpath(
+            "//nav[@aria-label='pagination']//a[contains(@aria-label,'page') and not(contains(@aria-label,'go to'))]"
+    )
 
     Webstaurant(WebDriver driver){
         assert null != driver
@@ -26,25 +29,28 @@ class Webstaurant {
         return this
     }
 
-    protected void sendKeys(By selector, String text) {
+    protected sendKeys(By selector, String text) {
         log.info(String.format("Beginning attempt to send keys `%s` to the `%s` element", text, selector))
         waitForElement (selector)
         driver.findElement (selector).sendKeys(text)
         log.info(String.format("Finished attempt to send keys `%s` to the `%s` element", text, selector))
+        return this
     }
 
-    protected void click(By selector) {
+    protected click(By selector) {
         log.info(String.format("Beginning attempt to click the `%s` element", selector))
         waitForElement (selector)
         driver.findElement (selector).click()
         log.info(String.format("Finished attempt to click the `%s` element", selector))
+        return this
     }
 
-    protected void waitForElement(By selector){
+    protected waitForElement(By selector){
         assert null != wait
         log.info(String.format("Beginning attempt to wait for the element `%s` to be clickable", selector))
         wait.until (webDriver -> driver.findElement (selector))
         log.info(String.format("Finish attempt to wait for the element `%s` to be clickable", selector))
+        return this
     }
 
 }
