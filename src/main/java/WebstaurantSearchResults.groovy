@@ -13,6 +13,7 @@ class WebstaurantSearchResults extends Webstaurant{
 
     List<WebElement> GetResults() {
         waitForElement(ALL_RESULTS)
-        List<WebElement> resultTitles =  driver.findElements(RESULTS_DESCRIPTION)
+        return driver.findElements(RESULTS_DESCRIPTION)
+
     }
 }
