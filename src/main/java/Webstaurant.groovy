@@ -47,6 +47,4 @@ class Webstaurant {
         log.info(String.format("Finish attempt to wait for the element `%s` to be clickable", selector))
     }
 
-
-
 }
