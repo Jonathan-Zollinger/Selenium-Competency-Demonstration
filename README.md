@@ -1,7 +1,7 @@
 ## WebstaurantStore Code Screen Task
 
 ### Task:
-Create a Maven-based Java or Groovy project and automate the test case described below. Once complete, upload your code to Github.com and send the project link back to pdriscoll@webstaurantstore.com.
+Create a Maven-based Java or Groovy project and automate the test case described below. Once complete, upload your code to Github.com and send the project link back.
 
 ### Requirements:
 - Must be runnable on Windows 10
