@@ -11,8 +11,15 @@ class Webstaurant {
     Logger log = Logger.getLogger(this.class.getName())
     final protected By SEARCH_BAR_INPUT = By.xpath("//input[@id='searchval']")
     final protected By EXECUTE_SEARCH_BUTTON = By.xpath("//button[@value='Search']")
-    final protected By PAGINATION_NUMBER_BUTTONS = By.xpath(
+    final protected By PAGINATION_NUMBERS = By.xpath(
             "//nav[@aria-label='pagination']//a[contains(@aria-label,'page') and not(contains(@aria-label,'go to'))]"
+    )
+    final protected String XPATH_PAGINATION_FORMAT_NUMBER = "//nav[@aria-label='pagination']//a[contains(text(),'%d')]"
+    final protected By PAGINATION_LAST_PAGE = By.xpath(
+            "//nav[@aria-label='pagination']//a[contains(@aria-label,'last page')]"
+    )
+    final protected By PAGINATION_CURRENT_PAGE = By.xpath(
+            "//nav[@aria-label='pagination']//a[contains(@aria-label,'current page')]"
     )
 
     Webstaurant(WebDriver driver){
@@ -89,7 +96,7 @@ class Webstaurant {
     }
 
     protected String logMethod(int startOrEndOrFail){
-        switch (start){
+        switch (startOrEndOrFail){
             case 0:
                 return "Beginning attempt"
                 break
