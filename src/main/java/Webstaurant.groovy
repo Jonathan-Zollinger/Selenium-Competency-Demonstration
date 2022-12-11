@@ -9,10 +9,6 @@ class Webstaurant {
     WebDriver driver;
     WebDriverWait wait;
     Logger log = Logger.getLogger(this.class.getName())
-    private String logForElement = "the element found by the `%s` Selector"
-    private String openingLog = "Beginning attempt"
-    private String closingLog = "Finished attempt"
-    private String formattedLogStatement = "%s %s %s" // log relevance, log verb, log subject
     final protected By SEARCH_BAR_INPUT = By.xpath("//input[@id='searchval']")
     final protected By EXECUTE_SEARCH_BUTTON = By.xpath("//button[@value='Search']")
     final protected By PAGINATION_NUMBER_BUTTONS = By.xpath(
