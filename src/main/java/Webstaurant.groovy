@@ -38,29 +38,29 @@ class Webstaurant {
     }
 
     protected sendKeys(By selector, String text) {
-        action = String.format("to send key(s) %s to", text)
-        logMethod(0, action, selector)
+        String thisAction = String.format("to send key(s) %s to", text)
+        logMethod(0, thisAction, selector)
         waitForElement (selector)
         try {
             driver.findElement(selector).sendKeys(text)
         }
         catch(WebDriverException generalWebDriverException){
-            log.severe(String.format(logMethod(2,action, selector),generalWebDriverException.stackTrace)
+            log.severe(String.format(logMethod(2,thisAction, selector),generalWebDriverException.stackTrace)
             )
         }
-        logMethod(1, action, selector)
+        logMethod(1, thisAction, selector)
         return this
     }
 
     protected click(By selector) {
-        action = "click"
+        String thisAction = "click"
         logMethod(0,"click", selector)
         waitForElement (selector)
         try{
             driver.findElement (selector).click()
         }
         catch(WebDriverException generalWebDriverException){
-            log.severe(String.format(logMethod(2,action, selector),generalWebDriverException.stackTrace)
+            log.severe(String.format(logMethod(2,thisAction, selector),generalWebDriverException.stackTrace)
             )
         }
 
@@ -70,29 +70,29 @@ class Webstaurant {
 
     protected waitForElement(By selector){
         assert null != wait
-        String action = "wait to click"
-        logMethod(0, action , selector)
+        String thisAction = "wait to click"
+        logMethod(0, thisAction , selector)
         try{
             wait.until (webDriver -> driver.findElement (selector))
         }
         catch(WebDriverException generalWebDriverException){
-            log.severe(String.format(logMethod(2,action, selector),generalWebDriverException.stackTrace)
+            log.severe(String.format(logMethod(2,thisAction, selector),generalWebDriverException.stackTrace)
             )
         }
-        logMethod(1, action , selector)
+        logMethod(1, thisAction , selector)
         return this
     }
 
-    protected String logMethod(int startOrEndOrFail, String action, By selector){
+    protected String logMethod(int startOrEndOrFail, String thisAction, By selector){
         String subject = String.format("the element found by the `%s` Selector", selector)
-        return logMethod(startOrEndOrFail, String.format("%s %s", action, subject))
+        return logMethod(startOrEndOrFail, String.format("%s %s", thisAction, subject))
     }
 
-    protected String logMethod(int startOrEndOrFail, String action){
+    protected String logMethod(int startOrEndOrFail, String thisAction){
         if (startOrEndOrFail.equals(2)){
-            return String.format("Failed to %s.%s", action, "\n\tStackTrace:\n\t%s")
+            return String.format("Failed to %s.%s", thisAction, "\n\tStackTrace:\n\t%s")
         }
-        return String.format("%s %s.", logMethod(startOrEndOrFail), action)
+        return String.format("%s %s.", logMethod(startOrEndOrFail), thisAction)
     }
 
     protected String logMethod(int startOrEndOrFail){
