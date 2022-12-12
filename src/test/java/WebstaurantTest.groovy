@@ -18,13 +18,15 @@ class WebstaurantTest {
 
     @Test
     void AllSearchResultsContainKeyWord() {
+        driver = MyUtils.getChromeDriver()
+        Webstaurant webstaurant = new Webstaurant(driver);
         for (String searchTerm : testSearchWords.keySet()) {
-            driver = MyUtils.getChromeDriver()
-            Webstaurant webstaurant = new Webstaurant(driver);
+
+
             webstaurant.searchForString(searchTerm)
 
             validateWebElementsText(
-                    (webstaurant as WebstaurantSearchResults).GetPageResults(),
+                    (webstaurant as WebstaurantSearchResults).GetPageResultsFromAllPages(),
                     testSearchWords.get(searchTerm)
             )
             driver.quit()
@@ -39,10 +41,10 @@ class WebstaurantTest {
         int iterator = 1 //used in logs only
 
         webElements.forEach { WebElement webElement ->
-            log.info(String.format("Beginning attempt to validate %d of %d results contains `%s` in its title" ,
+            log.info(String.format("Beginning attempt to validate result %d of %d contains `%s` in its title" ,
                      iterator,webElements.size(),text))
             assertTrue(webElement.getText().toLowerCase().contains(text.toLowerCase()))
-            log.info(String.format("Finished attempt to validate %d of %d results contains `%s` in its title" ,
+            log.info(String.format("Finished attempt to validate result %d of %d contains `%s` in its title" ,
                     iterator,webElements.size(),text))
             iterator ++
         }
