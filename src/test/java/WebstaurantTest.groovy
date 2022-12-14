@@ -1,22 +1,32 @@
 /* groovylint-disable JUnitPublicProperty */
 
-import com.google.common.collect.ImmutableMap
-import org.openqa.selenium.By
+
+import com.sun.codemodel.JTryBlock
+import org.junit.jupiter.api.DisplayName
+
+import java.util.logging.FileHandler
+import java.util.logging.SimpleFormatter
+
+import static org.hamcrest.CoreMatchers.*
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.ErrorCollector
+import org.openqa.selenium.WebDriver
+
 
 import java.util.logging.Logger
-import org.junit.Test
-import org.openqa.selenium.WebDriver
-import org.openqa.selenium.WebElement
-import MyUtils
 
 class WebstaurantTest {
 
     static final Logger log = Logger.getLogger(this.class.getName())
     WebDriver driver
-    
+    @Rule
+    public ErrorCollector collector = new ErrorCollector()
+
 
     @Test
-    void AllSearchResultsContainKeyWord() {
+    @DisplayName('Test if Result Titles contains `table`')
+    void checkTitlesForTable() {
         driver = MyUtils.getChromeDriver()
         WebstaurantSearchResults WebstaurantSearchResults = new WebstaurantSearchResults(driver)
         WebstaurantSearchResults.searchForString('stainless work table')
@@ -28,15 +38,26 @@ class WebstaurantTest {
         results.forEach { String result ->
             String thisAction = String.format('to validate title `%s` (%d of %d)', result, iterator, results.size())
             myLogger(0, thisAction)
-            assert (result.toLowerCase().contains('table'))
+            try {
+                collector.checkThat(result.toLowerCase(), containsString('table') )
+            } catch (AssertionError ignore) {
+                collector.addError(
+                        new Throwable(String.format('The following title does not contain `Table`: "%s"',result))
+                )
+            }
+
             myLogger(1, thisAction)
             iterator ++
         }
-
-        driver.quit()
+        try {
+            driver.quit()
+        }
+        catch(SocketException ignore){
+            //ignore
+        }
     }
 
-    //  ------------ logger formatter ------------
+    //  ------------ log message formatter ------------
 
     static myLogger(int startOrEndOrFail, String thisAction) {
         if (startOrEndOrFail == 2) {

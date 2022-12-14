@@ -18,7 +18,7 @@ class WebstaurantSearchResults extends Webstaurant {
             int thisPageNumber = getThisPageNumber()
             while (thisPageNumber != lastPageNumber) {
                 click (PAGINATION_NEXT_PAGE)
-                getResultsTitles().addAll(getResultsTitles())
+                allResultsTitlesFromAllPages.addAll(getResultsTitles())
                 thisPageNumber = getThisPageNumber()
             }
         }
