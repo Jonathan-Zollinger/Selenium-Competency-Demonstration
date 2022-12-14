@@ -18,7 +18,7 @@ class WebstaurantSearchResults extends Webstaurant {
             int lastPageNumber = getLastPageNumber() //last page number isn't available when on the last page
             int thisPageNumber = getThisPageNumber()
             while (thisPageNumber != lastPageNumber) {
-                clickNextPage()
+                click (PAGINATION_NEXT_PAGE)
                 allResultsFromAllPages.addAll(getResults())
                 thisPageNumber = getThisPageNumber()
             }

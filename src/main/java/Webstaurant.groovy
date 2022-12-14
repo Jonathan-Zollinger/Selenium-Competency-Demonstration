@@ -34,13 +34,6 @@ class Webstaurant {
         driver.get('https://webstaurantstore.com')
     }
 
-    void clickNextPage() {
-        WebElement nextPage = getPageNumberFromPagination(PAGINATION_NEXT_PAGE)
-        if (null != nextPage) {
-            click(nextPage)
-        }
-    }
-
     int getLastPageNumber() {
         if (isPaginationPresent()) {
             // WebElement lastPageButton
