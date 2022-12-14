@@ -1,0 +1,56 @@
+{
+    "extends": "recommended",
+    "rules": {
+        "CatchException": {
+            "enabled": false
+        },
+        "ClassEndsWithBlankLine": {
+            "enabled": false
+        },
+        "ClassJavadoc": {
+            "enabled": false
+        },
+        "FieldName": {
+            "enabled": false
+        },
+        "FileEndsWithoutNewline": {
+            "enabled": false
+        },
+        "InvertedCondition": {
+            "enabled": false
+        },
+        "JUnitStyleAssertions": {
+            "enabled": false
+        },
+        "MethodReturnTypeRequired": {
+            "enabled": false
+        },
+        "NoDef": {
+            "enabled": false
+        },
+        "ParameterName": {
+            "enabled": false
+        },
+        "PublicMethodsBeforeNonPublicMethods": {
+            "enabled": false
+        },
+        "ReturnNullFromCatchBlock": {
+            "enabled": false
+        },
+        "SpaceAfterMethodCallName": {
+            "enabled": false
+        },
+        "SpaceInsideParentheses": {
+            "enabled": false
+        },
+        "UnnecessaryGetter": {
+            "enabled": false
+        },
+        "UnnecessarySemicolon": {
+            "enabled": false
+        },
+        "VariableName": {
+            "enabled": false
+        }
+    }
+}
