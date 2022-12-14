@@ -112,12 +112,25 @@ class Webstaurant {
     }
 
     protected WebElement getElement(By selector) {
-        String thisAction = 'getElement'
+        String thisAction = 'get Element'
         myLogger(0, thisAction, selector)
         waitForElement(selector)
         try {
             myLogger(1, thisAction, selector)
             return driver.findElement(selector)
+        }
+        catch (WebDriverException generalWebDriverException) {
+            myLogger(2, thisAction, selector)
+            throw generalWebDriverException
+        }
+    }
+    protected List<WebElement> getElements(By selector) {
+        String thisAction = 'get Elements'
+        myLogger(0, thisAction, selector)
+        waitForElement(selector)
+        try {
+            myLogger(1, thisAction, selector)
+            return driver.findElements(selector)
         }
         catch (WebDriverException generalWebDriverException) {
             myLogger(2, thisAction, selector)
