@@ -1,14 +1,13 @@
-import org.openqa.selenium.By
-import org.openqa.selenium.WebDriver
-import org.openqa.selenium.WebDriverException
+import org.openqa.selenium.*
 import org.openqa.selenium.support.ui.WebDriverWait
 
 import java.util.logging.Logger
 
 class Webstaurant {
-    WebDriver driver;
-    WebDriverWait wait;
-    Logger log = Logger.getLogger(this.class.getName())
+
+    static final Logger log = Logger.getLogger(this.class.getName())
+    WebDriver driver
+    WebDriverWait wait
     final protected By SEARCH_BAR_INPUT = By.xpath("//input[@id='searchval']")
     final protected By EXECUTE_SEARCH_BUTTON = By.xpath("//button[@value='Search']")
     final protected By PAGINATION_NUMBERS = By.xpath(
@@ -21,91 +20,161 @@ class Webstaurant {
     final protected By PAGINATION_CURRENT_PAGE = By.xpath(
             "//nav[@aria-label='pagination']//a[contains(@aria-label,'current page')]"
     )
+    final protected By PAGINATION_NEXT_PAGE = By.xpath(
+            "//nav[@aria-label='pagination']//*[contains(@*,'right-open')]"
+    )
 
-    Webstaurant(WebDriver driver){
+    JavascriptExecutor js
+
+    Webstaurant(WebDriver driver) {
         assert null != driver
         this.driver = driver
         wait = MyUtils.getWebDriverWait(driver)
-        driver.get("https://webstaurantstore.com")
+        js = (JavascriptExecutor) driver
+        driver.get('https://webstaurantstore.com')
     }
 
-    protected searchForString(String findMe){
-        logMethod(0, "searh for " + findMe)
+    int getLastPageNumber() {
+        if (isPaginationPresent()) {
+            // WebElement lastPageButton
+            getPageNumberFromPagination (PAGINATION_LAST_PAGE)
+        }
+    }
+
+    private int getPageNumberFromPagination(By Selector) {
+        if (isPaginationPresent()) {
+            String stringNumber = getElement(Selector).getText()
+            try {
+                return Integer.parseInt(stringNumber.strip())
+            }
+            catch (NumberFormatException numberFormatException) {
+                log.severe(String.format('failed to parse string `%s`to an integer', stringNumber))
+                throw numberFormatException
+            }
+        }
+        return null
+    }
+
+    int getThisPageNumber() {
+        return getPageNumberFromPagination(PAGINATION_CURRENT_PAGE)
+    }
+
+    boolean isPaginationPresent() {
+        if (null != getElement(PAGINATION_NUMBERS)) {
+            log.info(String.format('Determined results span more than one page ' +
+                    'because WebElements are found with the `%s` selector', PAGINATION_NUMBERS))
+            return true
+        }
+        log.info(String.format('Determined results to span only one page ' +
+            'because no WebElements are found with the `%s` selector', PAGINATION_NUMBERS))
+        return false
+    }
+
+    protected searchForString(String findMe) {
+        String action = 'search for ' + findMe
+        myLogger(0, action)
         sendKeys(SEARCH_BAR_INPUT, findMe)
-        click (EXECUTE_SEARCH_BUTTON)
-        logMethod(1, "searh for " + findMe)
+        click(EXECUTE_SEARCH_BUTTON)
+        myLogger(1, action)
         return this
     }
+
+    //  -------------- fundamental driver methods with logs & built in waits --------------
 
     protected sendKeys(By selector, String text) {
-        action = String.format("to send key(s) %s to", text)
-        logMethod(0, action, selector)
-        waitForElement (selector)
+        String thisAction = String.format('to send key(s) %s to', text)
+        myLogger(0, thisAction, selector)
+        WebElement thisElement = getElement (selector)
         try {
-            driver.findElement(selector).sendKeys(text)
+            thisElement.sendKeys(text)
+            myLogger(1, thisAction, selector)
+            return this
         }
-        catch(WebDriverException generalWebDriverException){
-            log.severe(String.format(logMethod(2,action, selector),generalWebDriverException.stackTrace)
-            )
+        catch (WebDriverException generalWebDriverException) {
+            myLogger(2, thisAction, selector)
+            throw generalWebDriverException
         }
-        logMethod(1, action, selector)
-        return this
     }
 
     protected click(By selector) {
-        action = "click"
-        logMethod(0,"click", selector)
-        waitForElement (selector)
-        try{
-            driver.findElement (selector).click()
+        String thisAction = 'click'
+        myLogger(0, 'click', selector)
+        WebElement thisElement = getElement (selector)
+        try {
+            thisElement.click()
+            myLogger(1, thisAction, selector)
+            return this
         }
-        catch(WebDriverException generalWebDriverException){
-            log.severe(String.format(logMethod(2,action, selector),generalWebDriverException.stackTrace)
-            )
+        catch (WebDriverException generalWebDriverException) {
+            myLogger(2, thisAction, selector)
+            throw generalWebDriverException
         }
-
-        logMethod(1,"click", selector)
-        return this
     }
 
-    protected waitForElement(By selector){
+    protected WebElement getElement(By selector) {
+        String thisAction = 'get Element'
+        myLogger(0, thisAction, selector)
+        waitForElement(selector)
+        try {
+            myLogger(1, thisAction, selector)
+            return driver.findElement(selector)
+        }
+        catch (WebDriverException generalWebDriverException) {
+            myLogger(2, thisAction, selector)
+            throw generalWebDriverException
+        }
+    }
+    protected List<WebElement> getElements(By selector) {
+        String thisAction = 'get Elements'
+        myLogger(0, thisAction, selector)
+        waitForElement(selector)
+        try {
+            myLogger(1, thisAction, selector)
+            return driver.findElements(selector)
+        }
+        catch (WebDriverException generalWebDriverException) {
+            myLogger(2, thisAction, selector)
+            throw generalWebDriverException
+        }
+    }
+
+    protected waitForElement(By selector) {
         assert null != wait
-        String action = "wait to click"
-        logMethod(0, action , selector)
-        try{
-            wait.until (webDriver -> driver.findElement (selector))
+        String thisAction = 'wait until the driver can find'
+        myLogger(0, thisAction , selector)
+        try {
+            wait.until(webDriver -> driver.findElement(selector))
         }
-        catch(WebDriverException generalWebDriverException){
-            log.severe(String.format(logMethod(2,action, selector),generalWebDriverException.stackTrace)
-            )
+        catch (WebDriverException generalWebDriverException) {
+            myLogger(2, thisAction, selector)
+            throw generalWebDriverException
         }
-        logMethod(1, action , selector)
-        return this
     }
 
-    protected String logMethod(int startOrEndOrFail, String action, By selector){
-        String subject = String.format("the element found by the `%s` Selector", selector)
-        return logMethod(startOrEndOrFail, String.format("%s %s", action, subject))
+    //  ------------ logger formatter ------------
+
+    def myLogger(int startOrEndOrFail, String thisAction, By selector) {
+        String subject = String.format('the element found by the `%s` Selector', selector)
+        myLogger(startOrEndOrFail, String.format('%s %s', thisAction, subject))
     }
 
-    protected String logMethod(int startOrEndOrFail, String action){
-        if (startOrEndOrFail.equals(2)){
-            return String.format("Failed to %s.%s", action, "\n\tStackTrace:\n\t%s")
+    def myLogger(int startOrEndOrFail, String thisAction) {
+        if (startOrEndOrFail == 2) {
+            log.severe(String.format('Failed to %s.%s', thisAction, '\n\tStackTrace:\n\t%s'))
         }
-        return String.format("%s %s.", logMethod(startOrEndOrFail), action)
+        log.info(String.format('%s %s.', myLogger(startOrEndOrFail), thisAction))
     }
 
-    protected String logMethod(int startOrEndOrFail){
-        switch (startOrEndOrFail){
+    def myLogger(int startOrEndOrFail) {
+        switch (startOrEndOrFail) {
             case 0:
-                return "Beginning attempt"
-                break
+                return 'Beginning attempt'
             case 1:
-                return "Finished attempt"
-                break
+                return 'Finished attempt'
             default:
-                throw new IllegalStateException("logMethod(int) accepts only 0, 1 or 2.")
+                throw new IllegalStateException('myLogger(int) accepts only 0, 1 or 2.')
         }
     }
+
 
 }

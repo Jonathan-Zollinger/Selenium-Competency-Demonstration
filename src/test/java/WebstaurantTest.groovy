@@ -1,53 +1,72 @@
-import com.google.common.collect.ImmutableMap
+/* groovylint-disable JUnitPublicProperty */
+
+
+import com.sun.codemodel.JTryBlock
+import org.junit.jupiter.api.DisplayName
+
+import java.util.logging.FileHandler
+import java.util.logging.SimpleFormatter
+
+import static org.hamcrest.CoreMatchers.*
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.ErrorCollector
 import org.openqa.selenium.WebDriver
-import org.openqa.selenium.WebElement
+
 
 import java.util.logging.Logger
 
-import static org.junit.Assert.assertTrue
-
 class WebstaurantTest {
-    Map<String, String> testSearchWords = ImmutableMap.of(
-            //  "Search Term",  "Search Assertion"
-            "stainless work table", "Table"
-    )
-    WebDriver driver;
-    Logger log = Logger.getLogger(this.class.getName())
+
+    static final Logger log = Logger.getLogger(this.class.getName())
+    WebDriver driver
+    @Rule
+    public ErrorCollector collector = new ErrorCollector()
 
 
     @Test
-    void AllSearchResultsContainKeyWord() {
-        for (String searchTerm : testSearchWords.keySet()) {
-            driver = MyUtils.getChromeDriver()
-            Webstaurant webstaurant = new Webstaurant(driver);
-            webstaurant.searchForString(searchTerm)
+    @DisplayName('Test if Result Titles contains `table`')
+    void checkTitlesForTable() {
+        driver = MyUtils.getChromeDriver()
+        WebstaurantSearchResults WebstaurantSearchResults = new WebstaurantSearchResults(driver)
+        WebstaurantSearchResults.searchForString('stainless work table')
+        List<String> results = WebstaurantSearchResults.GetPageResultsTitlesFromAllPages()
 
-            validateWebElementsText(
-                    (webstaurant as WebstaurantSearchResults).GetPageResults(),
-                    testSearchWords.get(searchTerm)
-            )
-            driver.quit()
+        myLogger(0, 'to validate results contain `table` in their title')
+        int iterator = 1
+
+        results.forEach { String result ->
+            String thisAction = String.format('to validate title `%s` (%d of %d)', result, iterator, results.size())
+            myLogger(0, thisAction)
+            try {
+                collector.checkThat(result.toLowerCase(), containsString('table'))
+            } catch (SocketException ignore) {}
+
+            myLogger(1, thisAction)
+            iterator++
+        }
+
+        driver.quit()
+    }
+
+    //  ------------ log message formatter ------------
+
+    static myLogger(int startOrEndOrFail, String thisAction) {
+        if (startOrEndOrFail == 2) {
+            log.severe(String.format('Failed to %s.%s', thisAction, '\n\tStackTrace:\n\t%s'))
+        }
+        log.info(String.format('%s %s.', myLogger(startOrEndOrFail), thisAction))
+    }
+
+    static String myLogger(int startOrEndOrFail) {
+        switch (startOrEndOrFail) {
+            case 0:
+                return 'Beginning attempt'
+            case 1:
+                return 'Finished attempt'
+            default:
+                throw new IllegalStateException('myLogger(int) accepts only 0, 1 or 2.')
         }
     }
 
-    void validateWebElementsText(List<WebElement> webElements, String text) {
-        if ( null == webElements ) { new IllegalStateException ( "List of elements received is null." ) }
-
-        log.info ( String.format ("Beginning attempt to validate %d results contain `%s` in their titles",
-                webElements.size(), text))
-        int iterator = 1 //used in logs only
-
-        webElements.forEach { WebElement webElement ->
-            log.info(String.format("Beginning attempt to validate %d of %d results contains `%s` in its title" ,
-                     iterator,webElements.size(),text))
-            assertTrue(webElement.getText().toLowerCase().contains(text.toLowerCase()))
-            log.info(String.format("Finished attempt to validate %d of %d results contains `%s` in its title" ,
-                    iterator,webElements.size(),text))
-            iterator ++
-        }
-
-        log.info ( String.format ("Finished attempt to validate %d results contain `%s` in their titles",
-                webElements.size(), text))
-    }
 }
