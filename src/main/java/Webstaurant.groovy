@@ -91,7 +91,7 @@ class Webstaurant {
     protected sendKeys(By selector, String text) {
         String thisAction = String.format('to send key(s) %s to', text)
         myLogger(0, thisAction, selector)
-        WebElement thisElement = getElement { selector }
+        WebElement thisElement = getElement (selector)
         try {
             thisElement.sendKeys(text)
             myLogger(1, thisAction, selector)
@@ -106,7 +106,7 @@ class Webstaurant {
     protected click(By selector) {
         String thisAction = 'click'
         myLogger(0, 'click', selector)
-        WebElement thisElement = getElement { selector }
+        WebElement thisElement = getElement (selector)
         try {
             thisElement.click()
             myLogger(1, thisAction, selector)
@@ -124,7 +124,7 @@ class Webstaurant {
         waitForElement(selector)
         try {
             myLogger(1, thisAction, selector)
-            return driver.findElement { selector }
+            return driver.findElement(selector)
         }
         catch (WebDriverException generalWebDriverException) {
             myLogger(2, thisAction, selector)
