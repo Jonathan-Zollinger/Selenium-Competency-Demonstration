@@ -44,7 +44,7 @@ class Webstaurant {
     int getLastPageNumber() {
         if (isPaginationPresent()) {
             // WebElement lastPageButton
-            getElement(PAGINATION_LAST_PAGE)
+            getPageNumberFromPagination (PAGINATION_LAST_PAGE)
         }
     }
 
