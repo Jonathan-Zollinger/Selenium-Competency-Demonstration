@@ -22,6 +22,9 @@
         "JUnitStyleAssertions": {
             "enabled": false
         },
+        "MethodName": {
+            "enabled": false
+        },
         "MethodReturnTypeRequired": {
             "enabled": false
         },
@@ -29,6 +32,9 @@
             "enabled": false
         },
         "ParameterName": {
+            "enabled": false
+        },
+        "PropertyName": {
             "enabled": false
         },
         "PublicMethodsBeforeNonPublicMethods": {
