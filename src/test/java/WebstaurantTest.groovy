@@ -20,15 +20,16 @@ class WebstaurantTest {
         driver = MyUtils.getChromeDriver()
         WebstaurantSearchResults WebstaurantSearchResults = new WebstaurantSearchResults(driver)
         WebstaurantSearchResults.searchForString('stainless work table')
-        List<WebElement> results = WebstaurantSearchResults.GetPageResultsFromAllPages()
+        List<String> results = WebstaurantSearchResults.GetPageResultsTitlesFromAllPages()
 
         myLogger(0, 'to validate results contain `table` in their title')
         int iterator = 1
 
-        results.forEach { WebElement result ->
-            myLogger(0, String.format('to validate result %d of %d', iterator, results.size()))
-            assert (result.getText().toLowerCase().contains('table'))
-            myLogger(1, String.format('to validate result %d of %d', iterator, results.size()))
+        results.forEach { String result ->
+            String thisAction = String.format('to validate title `%s` (%d of %d)', result, iterator, results.size())
+            myLogger(0, thisAction)
+            assert (result.toLowerCase().contains('table'))
+            myLogger(1, thisAction)
             iterator ++
         }
 
