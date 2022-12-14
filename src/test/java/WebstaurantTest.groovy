@@ -39,22 +39,14 @@ class WebstaurantTest {
             String thisAction = String.format('to validate title `%s` (%d of %d)', result, iterator, results.size())
             myLogger(0, thisAction)
             try {
-                collector.checkThat(result.toLowerCase(), containsString('table') )
-            } catch (AssertionError ignore) {
-                collector.addError(
-                        new Throwable(String.format('The following title does not contain `Table`: "%s"',result))
-                )
-            }
+                collector.checkThat(result.toLowerCase(), containsString('table'))
+            } catch (SocketException ignore) {}
 
             myLogger(1, thisAction)
-            iterator ++
+            iterator++
         }
-        try {
-            driver.quit()
-        }
-        catch(SocketException ignore){
-            //ignore
-        }
+
+        driver.quit()
     }
 
     //  ------------ log message formatter ------------

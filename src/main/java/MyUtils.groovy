@@ -5,7 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.support.ui.WebDriverWait
 
-import java.time.Duration;
+import java.time.Duration
 
 class MyUtils {
 
@@ -23,6 +23,6 @@ class MyUtils {
         return new ChromeDriver(options)
     }
     static WebDriverWait getWebDriverWait(WebDriver driver) {
-        return new WebDriverWait(driver, Duration.ofSeconds(2));
+        return new WebDriverWait(driver, Duration.ofSeconds(2))
     }
 }
