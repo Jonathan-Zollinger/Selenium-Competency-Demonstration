@@ -50,12 +50,12 @@ class Webstaurant {
 
     private int getPageNumberFromPagination(By Selector) {
         if (isPaginationPresent()) {
-            String stringNumber = getElement(Selector).getText
+            String stringNumber = getElement(Selector).getText()
             try {
-                return Integer.parseInt(stringNumber.strip)
+                return Integer.parseInt(stringNumber.strip())
             }
             catch (NumberFormatException numberFormatException) {
-                log.Error(String.format('failed to parse string `%s`to an integer', stringNumber))
+                log.severe(String.format('failed to parse string `%s`to an integer', stringNumber))
                 throw numberFormatException
             }
         }
