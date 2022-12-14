@@ -1,55 +1,58 @@
+/* groovylint-disable JUnitPublicProperty */
+
 import com.google.common.collect.ImmutableMap
+import org.openqa.selenium.By
+
+import java.util.logging.Logger
 import org.junit.Test
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
-
-import java.util.logging.Logger
-
-import static org.junit.Assert.assertTrue
+import MyUtils
 
 class WebstaurantTest {
-    Map<String, String> testSearchWords = ImmutableMap.of(
-            //  "Search Term",  "Search Assertion"
-            "stainless work table", "Table"
-    )
-    WebDriver driver;
-    Logger log = Logger.getLogger(this.class.getName())
 
+    static final Logger log = Logger.getLogger(this.class.getName())
+    WebDriver driver
+    
 
     @Test
     void AllSearchResultsContainKeyWord() {
         driver = MyUtils.getChromeDriver()
-        Webstaurant webstaurant = new Webstaurant(driver);
-        for (String searchTerm : testSearchWords.keySet()) {
+        WebstaurantSearchResults WebstaurantSearchResults = new WebstaurantSearchResults(driver)
+        WebstaurantSearchResults.searchForString('stainless work table')
+        List<WebElement> results = WebstaurantSearchResults.GetPageResultsFromAllPages()
 
+        myLogger(0, 'to validate results contain `table` in their title')
+        int iterator = 1
 
-            webstaurant.searchForString(searchTerm)
-
-            validateWebElementsText(
-                    (webstaurant as WebstaurantSearchResults).GetPageResultsFromAllPages(),
-                    testSearchWords.get(searchTerm)
-            )
-            driver.quit()
-        }
-    }
-
-    void validateWebElementsText(List<WebElement> webElements, String text) {
-        if ( null == webElements ) { new IllegalStateException ( "List of elements received is null." ) }
-
-        log.info ( String.format ("Beginning attempt to validate %d results contain `%s` in their titles",
-                webElements.size(), text))
-        int iterator = 1 //used in logs only
-
-        webElements.forEach { WebElement webElement ->
-            log.info(String.format("Beginning attempt to validate result %d of %d contains `%s` in its title" ,
-                     iterator,webElements.size(),text))
-            assertTrue(webElement.getText().toLowerCase().contains(text.toLowerCase()))
-            log.info(String.format("Finished attempt to validate result %d of %d contains `%s` in its title" ,
-                    iterator,webElements.size(),text))
+        results.forEach { WebElement result ->
+            myLogger(0, String.format('to validate result %d of %d', iterator, results.size()))
+            assert (result.getText().toLowerCase().contains('table'))
+            myLogger(1, String.format('to validate result %d of %d', iterator, results.size()))
             iterator ++
         }
 
-        log.info ( String.format ("Finished attempt to validate %d results contain `%s` in their titles",
-                webElements.size(), text))
+        driver.quit()
     }
+
+    //  ------------ logger formatter ------------
+
+    static myLogger(int startOrEndOrFail, String thisAction) {
+        if (startOrEndOrFail == 2) {
+            log.severe(String.format('Failed to %s.%s', thisAction, '\n\tStackTrace:\n\t%s'))
+        }
+        log.info(String.format('%s %s.', myLogger(startOrEndOrFail), thisAction))
+    }
+
+    static String myLogger(int startOrEndOrFail) {
+        switch (startOrEndOrFail) {
+            case 0:
+                return 'Beginning attempt'
+            case 1:
+                return 'Finished attempt'
+            default:
+                throw new IllegalStateException('myLogger(int) accepts only 0, 1 or 2.')
+        }
+    }
+
 }
